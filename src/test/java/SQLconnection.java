@@ -16,11 +16,12 @@ public class SQLconnection {
 
     public static Connection connection(){
         try {
-            conn = DriverManager.getConnection(hostName,userName,userPass);
+            if(conn == null) conn = DriverManager.getConnection(hostName,userName,userPass);
+            return conn;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return conn;
+       return null;
     }
 
 }

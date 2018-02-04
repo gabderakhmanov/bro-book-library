@@ -3,51 +3,31 @@ import java.sql.*;
 
 public class Starter {
 
-	public static void main(String[] args) throws ClassNotFoundException {
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
         String hostName = "jdbc:mysql://localhost:3306/book_library";
         String userName = "user";
         String userPass = "12345";
 
         SQLconnection con = new SQLconnection(hostName,userName,userPass);
 
-        con.connection();
+        Connection conn = con.connection();
 
         JFrame frame = new JFrame("Book-Library");
         JPanel mainPanel = new JPanel();
-        JTable table = new JTable();
-        JScrollPane scrollPane = new JScrollPane(table);
 
-        frame.setSize(400,400);
+        TableModelA tableModelA = new TableModelA(conn, "book");
+
+        JTable table = new JTable(tableModelA);
+
+        JScrollPane scroller = new JScrollPane(table, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(scrollPane);
+        frame.add(mainPanel);
+        frame.getContentPane().add(scroller);
+        frame.pack();
         frame.setVisible(true);
 
-
-
-        Connection conn = null;
-        Statement stm = null;
-        ResultSet rt = null;
-
-        try {
-            conn = DriverManager.getConnection(hostName,userName,userPass);
-
-            String sql = "SELECT * FROM person";
-
-            stm = conn.createStatement();
-            rt = stm.executeQuery(sql);
-
-            while (rt.next()) {
-                System.out.print(rt.getString("person_id")+" ");
-                System.out.print(rt.getString("person_name")+" ");
-                System.out.print(rt.getString("person_surname")+" ");
-                System.out.print(rt.getString("person_age")+"\n");
-            }
-
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        conn.close();
 
     }
 
